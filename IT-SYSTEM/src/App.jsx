@@ -1,10 +1,11 @@
 import './App.css'
+import Sidebar from './components/Sidebar'
 
 function App() {
 
   return (
     <>
-      <div className='text-8xl'>Hello world</div>
+      <Sidebar />
     </>
   )
 }

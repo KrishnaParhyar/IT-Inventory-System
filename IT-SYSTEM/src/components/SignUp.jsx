@@ -13,6 +13,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState("Admin");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -231,6 +232,18 @@ const Signup = () => {
                 </p>
               )}
             </div>
+            <div className="mb-6">
+                    <label className="block text-gray-700 mb-2">Role</label>
+                    <select
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                    >
+                        <option value="admin">Admin</option>
+                        <option value="operator">Operator</option>
+                        <option value="management">Management</option>
+                    </select>
+                </div>
             <div>
               <button
                 type="submit"

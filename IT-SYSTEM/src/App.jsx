@@ -7,14 +7,14 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 function App() {
   return (
     <>
-      {/* <Routes>
+      <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
-        {/* Add more routes as needed */}
       </Routes>
+
       {/* <Sidebar /> */}
     </>
   )

@@ -76,7 +76,7 @@ const ForgetPassword = () => {
             Trouble logging in?
           </p>
           <p className="text-gray-600">
-            Enter your email we'll send you a link to get back into your account.
+            Enter your email we'll send you an OTP to get back into your account.
           </p>
         </div>
 
@@ -143,14 +143,7 @@ const ForgetPassword = () => {
           </form>
         </div>
 
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200">
-              Sign up
-            </Link>
-          </p>
-        </div>
+        
       </div>
     </div>
   );

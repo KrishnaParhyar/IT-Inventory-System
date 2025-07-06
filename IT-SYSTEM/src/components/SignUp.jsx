@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 const Signup = () => {
@@ -13,7 +14,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [role, setRole] = useState("Admin");
+  const [role, setRole] = useState("admin");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,20 +55,36 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      alert('Signup successful! (This is a demo)');
-    } catch (error) {
-      alert('Signup failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  e.preventDefault();
+  if (!validateForm()) {
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      role: role.toLowerCase(), // your enum is in lowercase
+    };
+    console.log("Submitting role:", role);
+
+
+    const res = await axios.post('http://localhost:5000/api/auth/signup', payload);
+
+    alert(res.data.message || "Signup successful!");
+    // You can also redirect to login page here
+    // navigate('/login');
+  } catch (error) {
+    console.error(error);
+    alert(error.response?.data?.message || "Signup failed. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
@@ -239,9 +256,9 @@ const Signup = () => {
                         onChange={(e) => setRole(e.target.value)}
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
                     >
-                        <option value="admin">Admin</option>
-                        <option value="operator">Operator</option>
-                        <option value="management">Management</option>
+                        <option value="admin">admin</option>
+                        <option value="operator">operator</option>
+                        <option value="management">management</option>
                     </select>
                 </div>
             <div>

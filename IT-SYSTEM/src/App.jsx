@@ -3,6 +3,7 @@ import Login from './components/Login'
 import Signup from './components/SignUp'
 import ForgetPassword from './components/ForgetPassword'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import Dashboard from './components/Dashboard'
 
 function App() {
   return (

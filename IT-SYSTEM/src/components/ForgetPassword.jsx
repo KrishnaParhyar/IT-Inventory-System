@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ForgetPassword = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: ''
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,39 +26,39 @@ const ForgetPassword = () => {
 
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setMessage('');
     if (!validateForm()) {
       return;
     }
-
     setIsLoading(true);
-    
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Login attempt:', formData);
-      alert('Login successful! (This is a demo)');
+      const res = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage('OTP sent! Please check your email.');
+        setTimeout(() => {
+          navigate('/otp', { state: { email: formData.email } });
+        }, 1000);
+      } else {
+        setMessage(data.message || 'Failed to send OTP.');
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      alert('Login failed. Please try again.');
+      setMessage('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +68,6 @@ const ForgetPassword = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             IT Inventory System
           </h2>
@@ -79,10 +78,8 @@ const ForgetPassword = () => {
             Enter your email we'll send you an OTP to get back into your account.
           </p>
         </div>
-
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -118,7 +115,6 @@ const ForgetPassword = () => {
                 </p>
               )}
             </div>
-
             <div>
               <button
                 type="submit"
@@ -131,7 +127,7 @@ const ForgetPassword = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Signing in...
+                    Sending OTP...
                   </div>
                 ) : (
                   <div className="flex items-center">
@@ -140,10 +136,11 @@ const ForgetPassword = () => {
                 )}
               </button>
             </div>
+            {message && (
+              <div className={`mt-2 text-center text-sm ${message.includes('OTP sent') ? 'text-green-600' : 'text-red-600'}`}>{message}</div>
+            )}
           </form>
         </div>
-
-        
       </div>
     </div>
   );

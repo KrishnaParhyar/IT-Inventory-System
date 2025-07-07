@@ -4,6 +4,7 @@ import Signup from './components/SignUp'
 import ForgetPassword from './components/ForgetPassword'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Dashboard from './components/Dashboard'
+import ResetPassword from './components/ResetPassword'
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path='/reset' element={<ResetPassword />} />
+
       </Routes>
 
       {/* <Sidebar /> */}

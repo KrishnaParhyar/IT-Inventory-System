@@ -56,9 +56,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
   e.preventDefault();
-  if (!validateForm()) {
-    return;
-  }
+  if (!validateForm()) return;
 
   setIsLoading(true);
 
@@ -67,23 +65,24 @@ const Signup = () => {
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      role: role.toLowerCase(), // your enum is in lowercase
+      role: role.toLowerCase(),
     };
+
     console.log("Submitting role:", role);
 
-
-    const res = await axios.post('http://localhost:5000/api/auth/signup', payload);
+    // 🔽 Add this line to actually call your backend!
+    const res = await axios.post("http://localhost:5000/api/auth/signup", payload);
 
     alert(res.data.message || "Signup successful!");
-    // You can also redirect to login page here
+    // Optionally redirect to login page
     // navigate('/login');
   } catch (error) {
-    console.error(error);
     alert(error.response?.data?.message || "Signup failed. Please try again.");
   } finally {
     setIsLoading(false);
   }
 };
+
 
 
   return (

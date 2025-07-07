@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +25,7 @@ const Login = () => {
         [name]: ''
       }));
     }
+    setLoginError('');
   };
 
   const validateForm = () => {
@@ -35,8 +39,6 @@ const Login = () => {
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
     }
 
     setErrors(newErrors);
@@ -51,14 +53,30 @@ const Login = () => {
     }
 
     setIsLoading(true);
+    setLoginError('');
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      console.log('Login attempt:', formData);
-      alert('Login successful! (This is a demo)');
+      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      
+      // Save token and user data (you might use context or redux in a real app)
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      // Redirect based on user role
+      switch(response.data.user.role) {
+        case 'admin':
+          navigate('/dashboard');
+          break;
+        case 'management':
+          navigate('/dashboard');
+          break;
+        default:
+          navigate('/dashboard');
+      }
+      
     } catch (error) {
       console.error('Login error:', error);
-      alert('Login failed. Please try again.');
+      setLoginError(error.response?.data?.message || 'Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +86,6 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             IT Inventory System
           </h2>
@@ -78,8 +95,14 @@ const Login = () => {
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+          {loginError && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {loginError}
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
-            
+            {/* Email field (unchanged from your original) */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -116,6 +139,7 @@ const Login = () => {
               )}
             </div>
 
+            {/* Password field (unchanged from your original) */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password

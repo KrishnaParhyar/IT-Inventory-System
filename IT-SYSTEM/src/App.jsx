@@ -6,6 +6,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Dashboard from './components/Dashboard'
 import OtpPage from './components/OtpPage'
 import { Link } from 'react-router-dom'
+import ResetPassword from './components/ResetPassword'
 
 function App() {
   return (
@@ -18,7 +19,6 @@ function App() {
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/otp" element={<OtpPage />} />
       </Routes>
-
 
       {/* <Sidebar /> */}
     </>

@@ -2,26 +2,104 @@ import './App.css'
 import Login from './components/Login'
 import Signup from './components/SignUp'
 import ForgetPassword from './components/ForgetPassword'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import Dashboard from './components/Dashboard'
 import OtpPage from './components/OtpPage'
-import { Link } from 'react-router-dom'
 import ResetPassword from './components/ResetPassword'
+import { useState, useEffect } from 'react'
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    // Check if user is authenticated (has valid token)
+    const token = localStorage.getItem('token')
+    if (token) {
+      // You can add token validation logic here
+      setIsAuthenticated(true)
+    }
+    setIsLoading(false)
+  }, [])
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+  }
+
+  return isAuthenticated ? children : <Navigate to="/login" replace />
+}
+
+// Public Route Component (redirects to dashboard if already authenticated)
+const PublicRoute = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      setIsAuthenticated(true)
+    }
+    setIsLoading(false)
+  }, [])
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+  }
+
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children
+}
+
+// Layout Component for authenticated pages
+const AuthenticatedLayout = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* You can add a header/navbar here */}
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  )
+}
+
+// Layout Component for public pages
+const PublicLayout = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  )
+}
 
 function App() {
   return (
-    <>
+    <div className="App">
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route path="/otp" element={<OtpPage />} />
-      </Routes>
+        {/* Public Routes */}
+        <Route element={<PublicLayout />}>
+          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+          <Route path="/forget-password" element={<PublicRoute><ForgetPassword /></PublicRoute>} />
+          <Route path="/otp" element={<PublicRoute><OtpPage /></PublicRoute>} />
+          <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+        </Route>
 
-      {/* <Sidebar /> */}
-    </>
+        {/* Protected Routes */}
+        <Route element={<AuthenticatedLayout />}>
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          {/* Add more protected routes here */}
+          {/* <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} /> */}
+          {/* <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} /> */}
+          {/* <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} /> */}
+        </Route>
+
+        {/* Default redirects */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </div>
   )
 }
 

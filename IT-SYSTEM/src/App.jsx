@@ -1,12 +1,11 @@
 import './App.css'
 import Login from './components/Login'
 import Signup from './components/SignUp'
-import ForgetPassword from './components/ForgetPassword'
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import Dashboard from './components/Dashboard'
-import OtpPage from './components/OtpPage'
-import ResetPassword from './components/ResetPassword'
 import { useState, useEffect } from 'react'
+import Employees from './components/Employees';
+import Designations from './components/Designations';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -81,14 +80,13 @@ function App() {
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-          <Route path="/forget-password" element={<PublicRoute><ForgetPassword /></PublicRoute>} />
-          <Route path="/otp" element={<PublicRoute><OtpPage /></PublicRoute>} />
-          <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
         </Route>
 
         {/* Protected Routes */}
         <Route element={<AuthenticatedLayout />}>
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/employees" element={<Employees />} />
+          <Route path="/designations" element={<Designations />} />
           {/* Add more protected routes here */}
           {/* <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} /> */}
           {/* <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} /> */}

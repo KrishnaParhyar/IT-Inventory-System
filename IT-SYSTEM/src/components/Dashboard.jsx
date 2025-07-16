@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 // Role-based menu definitions
 const SIDEBAR_MENUS = {
@@ -12,18 +13,49 @@ const SIDEBAR_MENUS = {
     { label: 'Transfer Log', icon: '🔄' },
     { label: 'Maintenance Requests', icon: '🛠️' },
     { label: 'Users & Roles', icon: '👤' },
-    { label: 'Reports', icon: '📊' },
     { label: 'Settings', icon: '⚙️' },
     { label: 'Logout', icon: '🚪' },
+    // Employees with sub-options
+    { label: 'Employees', icon: '👥', subOptions: [
+      { label: 'Employees', icon: '👤' },
+      { label: 'Designations', icon: '🏷️' },
+      { label: 'Departments', icon: '🏢' },
+      { label: 'Department Locations', icon: '📍' },
+    ] },
+    { label: 'Items', icon: '📦' },
+    { label: 'Suppliers', icon: '🏭' },
+    { label: 'Reports', icon: '📊' },
   ],
   operator: [
     { label: 'Inventory Items', icon: '💻' },
     { label: 'Issue Items', icon: '📤' },
     { label: 'Receive Items', icon: '📥' },
     { label: 'Transfer Log', icon: '🔄' },
+    // Employees with sub-options
+    { label: 'Employees', icon: '👥', subOptions: [
+      { label: 'Employees' },
+      { label: 'Designations' },
+      { label: 'Departments' },
+      { label: 'Department Locations' },
+      { label: 'Back' },
+    ] },
+    { label: 'Items', icon: '📦' },
+    { label: 'Suppliers', icon: '🏭' },
+    { label: 'Reports', icon: '📊' },
   ],
   management: [
     { label: 'Dashboard', icon: '🏠' },
+    { label: 'Reports', icon: '📊' },
+    // Employees with sub-options
+    { label: 'Employees', icon: '👥', subOptions: [
+      { label: 'Employees' },
+      { label: 'Designations' },
+      { label: 'Departments' },
+      { label: 'Department Locations' },
+      { label: 'Back' },
+    ] },
+    { label: 'Items', icon: '📦' },
+    { label: 'Suppliers', icon: '🏭' },
     { label: 'Reports', icon: '📊' },
   ],
 };
@@ -96,6 +128,9 @@ const stockAlerts = [
 const Dashboard = () => {
   // Simulate user role (dropdown for demo)
   const [userRole, setUserRole] = useState('admin');
+  // Track which submenu is open
+  const [openSubMenu, setOpenSubMenu] = useState(null);
+  const navigate = useNavigate();
 
   // Role-based menu and cards
   const sidebarMenus = SIDEBAR_MENUS[userRole];
@@ -129,13 +164,45 @@ const Dashboard = () => {
         <nav className="flex-1">
           <ul className="space-y-2">
             {sidebarMenus.map((item, idx) => (
-              <li
-                key={idx}
-                className={`p-2 flex items-center gap-2 hover:bg-[#23263A] rounded-lg cursor-pointer`}
-                onClick={() => alert(`${item.label} clicked!`)}
-              >
-                <span>{item.icon}</span> {item.label}
-              </li>
+              <React.Fragment key={idx}>
+                <li
+                  className={`p-2 flex items-center gap-2 hover:bg-[#23263A] rounded-lg cursor-pointer select-none`}
+                  onClick={() => {
+                    if (item.subOptions) {
+                      setOpenSubMenu(openSubMenu === idx ? null : idx);
+                    } else {
+                      alert(`${item.label} clicked!`);
+                    }
+                  }}
+                >
+                  <span>{item.icon}</span> {item.label}
+                  {item.subOptions && (
+                    <span className="ml-auto">{openSubMenu === idx ? '▲' : '▼'}</span>
+                  )}
+                </li>
+                {item.subOptions && openSubMenu === idx && (
+                  <ul className="ml-6 space-y-1">
+                    {item.subOptions.map((sub, subIdx) => (
+                      <li
+                        key={subIdx}
+                        className="p-2 flex items-center gap-2 hover:bg-[#23263A] rounded-lg cursor-pointer text-sm"
+                        onClick={e => {
+                          e.stopPropagation();
+                          if (sub.label === 'Employees') {
+                            navigate('/employees');
+                          } else if (sub.label === 'Designations') {
+                            navigate('/designations');
+                          } else {
+                            alert(`${sub.label} clicked!`);
+                          }
+                        }}
+                      >
+                        {sub.icon && <span>{sub.icon}</span>} {sub.label}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </React.Fragment>
             ))}
           </ul>
         </nav>

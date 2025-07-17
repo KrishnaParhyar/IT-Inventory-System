@@ -54,3 +54,28 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-07-07 15:09:53
+
+-- Table structure for table `employees`
+DROP TABLE IF EXISTS `employees`;
+CREATE TABLE `employees` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` varchar(50) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `designation` varchar(255) NOT NULL,
+  `department` varchar(255) NOT NULL,
+  `intercom` varchar(50),
+  `phone` varchar(50),
+  `mobile` varchar(50),
+  `room_number` varchar(50),
+  `floor` varchar(50),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `employee_id` (`employee_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table structure for table `designations`
+DROP TABLE IF EXISTS `designations`;
+CREATE TABLE `designations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `designation` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -37,6 +37,12 @@ testConnection();
 const authRoutes = require('./routes/authRoutes');
 app.use('/api/auth', authRoutes(pool)); // Pass the pool to routes
 
+const employeesRoutes = require('./routes/employeesRoutes');
+app.use('/api/employees', employeesRoutes(pool));
+
+const designationsRoutes = require('./routes/designationsRoutes');
+app.use('/api/designations', designationsRoutes(pool));
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

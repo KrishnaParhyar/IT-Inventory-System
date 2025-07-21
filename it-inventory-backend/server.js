@@ -43,8 +43,6 @@ app.use('/api/employees', employeesRoutes(pool));
 const designationsRoutes = require('./routes/designationsRoutes');
 app.use('/api/designations', designationsRoutes(pool));
 
-const departmentsRoutes = require('./routes/departmentsRoutes');
-app.use('/api/departments', departmentsRoutes(pool));
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -6,6 +6,8 @@ import Dashboard from './components/Dashboard'
 import { useState, useEffect } from 'react'
 import Employees from './components/Employees';
 import Designations from './components/Designations';
+import DepartmentDetails from './components/DepartmentDetails'
+import Departments from './components/Departments';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -87,6 +89,8 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/employees" element={<Employees />} />
           <Route path="/designations" element={<Designations />} />
+          <Route path="/departments" element={<ProtectedRoute><Departments /></ProtectedRoute>} />
+          <Route path="/departments/:id" element={<ProtectedRoute><DepartmentDetails /></ProtectedRoute>} />
           {/* Add more protected routes here */}
           {/* <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} /> */}
           {/* <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} /> */}

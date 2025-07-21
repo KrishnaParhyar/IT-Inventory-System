@@ -192,6 +192,8 @@ const Dashboard = () => {
                             navigate('/employees');
                           } else if (sub.label === 'Designations') {
                             navigate('/designations');
+                          } else if (sub.label === 'Departments') {
+                            navigate('/departments/1'); // <-- Yahan department id set karein
                           } else {
                             alert(`${sub.label} clicked!`);
                           }
